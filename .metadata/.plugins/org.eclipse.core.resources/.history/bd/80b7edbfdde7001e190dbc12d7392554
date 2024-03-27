@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" type="text/css" href="style.css">
+<title>Insert title here</title>
+</head>
+<body>
+<section>
+	<form>
+	 <fieldset class="faleConosco">
+         <legend>Contato</legend>
+         <label for="nome">Nome: </label>
+         <input type="text" name="txtnome" id="nome">
+         <label for="fone">Telefone: </label>
+         <input type="text" name="txtfone" id="fone">
+         <label for="text">Endereço: </label>
+         <input type="text" name="txtendereco" id="endereco">
+		 <button type="reset">Limpar</button><button type="submit">Enviar</button>      	
+      </fieldset>
+	</form>
+</section>
+</body>
+</html>
