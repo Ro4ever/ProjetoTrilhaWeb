@@ -105,6 +105,11 @@ footer{
 	padding: 10px;
 }
 
+/* Modais */
+#modalAviso{
+	display: none;
+}
+
 /* Layout CRUDs */
 /* Título da página */
 section h2, section h3{
