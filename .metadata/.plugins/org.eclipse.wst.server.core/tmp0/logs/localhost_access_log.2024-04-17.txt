@@ -1,0 +1,11 @@
+127.0.0.1 - - [17/Apr/2024:21:28:43 -0300] "GET / HTTP/1.1" 404 763
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:44 -0300] "GET /favicon.ico HTTP/1.1" 404 774
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:53 -0300] "GET /ProjetoTrilhaWeb/pages/admin/ HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:53 -0300] "GET /ProjetoTrilhaWeb/css/admin.css HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:53 -0300] "GET /ProjetoTrilhaWeb/css/jquerry-ui.css HTTP/1.1" 404 806
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:53 -0300] "GET /ProjetoTrilhaWeb/js/jquerry-ui.js HTTP/1.1" 404 804
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:53 -0300] "GET /ProjetoTrilhaWeb/js/admin.js HTTP/1.1" 200 1348
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:55 -0300] "GET /ProjetoTrilhaWeb/js/product.js HTTP/1.1" 200 2576
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:28:57 -0300] "GET /ProjetoTrilhaWeb/rest/marca/buscar HTTP/1.1" 200 83
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:29:00 -0300] "GET /ProjetoTrilhaWeb/js/product.js HTTP/1.1" 304 -
+0:0:0:0:0:0:0:1 - - [17/Apr/2024:21:29:01 -0300] "GET /ProjetoTrilhaWeb/rest/marca/buscar HTTP/1.1" 200 83

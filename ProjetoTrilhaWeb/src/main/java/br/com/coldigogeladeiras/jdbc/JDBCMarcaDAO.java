@@ -6,8 +6,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import br.com.coldigogeladeias.jdbcinterface.MarcaDAO;
 import br.com.coldigogeladeiras.modelo.Marca;
+import br.com.coldigogeladeiras.jdbcinterface.MarcaDAO;
 
 public class JDBCMarcaDAO implements MarcaDAO {
 	

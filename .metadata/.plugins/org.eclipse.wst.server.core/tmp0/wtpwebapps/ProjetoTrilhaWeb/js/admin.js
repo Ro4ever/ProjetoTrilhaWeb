@@ -3,6 +3,9 @@ COLDIGO = new Object();
 
 $(document).ready(function() {
 	
+	//Cria uma constante com o valor da URI raiz do REST
+	COLDIGO.PATH = "/ProjetoTrilhaWeb/rest/";
+	
 	$("header").load("http://localhost:8085/ProjetoTrilhaWeb/pages/admin/general/header.html");
 	$("footer").load("http://localhost:8085/ProjetoTrilhaWeb/pages/admin/general/footer.html");
 	
@@ -20,7 +23,7 @@ $(document).ready(function() {
 		});
 	}
 	
-	//Define as configurações base de ummodal de aviso
+	//Define as configurações base de um modal de aviso 
 	COLDIGO.exibirAviso = function(aviso){
 		var modal = {
 			title: "Mensagem",
@@ -33,7 +36,7 @@ $(document).ready(function() {
 				}
 			}
 		};
-		$("modalAviso").html(aviso);
-		$("modalAviso").dialog(modal);
+		$("#modalAviso").html(aviso);
+		$("#modalAviso").dialog(modal);
 	};
 });
