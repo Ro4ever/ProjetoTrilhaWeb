@@ -22,6 +22,10 @@ $(document).ready(function() {
 			}
 		});
 	}
+	//Exibe os valores financeiros no formato da moeda Real
+	COLDIGO.formatarDinheiro = function(valor){
+		return valor.toFixed(2).replace('.',',').replace(/(\d)(?=(\d{3})+\,)/g, "$1.");
+	}
 	
 	//Define as configurações base de um modal de aviso 
 	COLDIGO.exibirAviso = function(aviso){
