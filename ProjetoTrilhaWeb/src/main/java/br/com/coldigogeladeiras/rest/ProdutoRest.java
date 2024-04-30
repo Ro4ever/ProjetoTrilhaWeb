@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.PathParam;
+import javax.ws.rs.PUT;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -107,5 +108,54 @@ public class ProdutoRest extends UtilRest{
 			return this.buildErrorResponse(e.getMessage());
 		}
 		
+	}
+	@GET
+	@Path("/buscarPorId")
+	@Consumes("application/*")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response buscarPorId(@QueryParam("id") int id) {
+		try {
+			Produto produto = new Produto();
+			Conexao conec = new Conexao();
+			Connection conexao = conec.abrirConexao();
+			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+			
+			produto = jdbcProduto.buscarPorId(id);
+			
+			conec.fecharConexao();
+			
+			return this.buildResponse(produto);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return this.buildErrorResponse(e.getMessage());
+		}
+	}
+	@PUT
+	@Path("/alterar")
+	@Consumes("application/*")
+	public Response alterar(String produtoParam) {
+		try {
+			Produto produto = new Gson().fromJson(produtoParam, Produto.class);
+			Conexao conec = new Conexao();
+			Connection conexao = conec.abrirConexao();
+			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+			
+			boolean retorno = jdbcProduto.alterar(produto);
+			
+			String msg = "";
+			if(retorno) {
+				msg = "Produto alterado com sucesso!";
+			}else {
+				msg = "Erro ao alterar produto.";
+			}
+			
+			conec.fecharConexao();
+			return this.buildResponse(msg);
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			return this.buildErrorResponse(e.getMessage());
+		}
 	}
 }

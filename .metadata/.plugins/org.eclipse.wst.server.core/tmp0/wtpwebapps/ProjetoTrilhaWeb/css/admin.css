@@ -89,6 +89,7 @@ nav .opcao:hover{
 	display: block;
 }
 
+
 /* Seção */
 section{
 	clear: both;
@@ -106,7 +107,7 @@ footer{
 }
 
 /* Modais */
-#modalAviso{
+#modalAviso, .modalEditar{
 	display: none;
 }
 
