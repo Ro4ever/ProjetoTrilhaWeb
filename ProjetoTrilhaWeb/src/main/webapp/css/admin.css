@@ -135,11 +135,11 @@ section h2, section h3{
 	width: 300px;
 	padding: 2px 0;
 }
-.frmInserir textarea{
+.frmInserir textarea, frmEditaMarca textarea{
 	height: 100px;
 	resize: none;
 }
-.frmInserir button, .frmFiltrar button{
+.frmInserir button, .frmFiltrar button, frmEditaMarca button{
 	width: 100px;
 	margin: 0 1%;
 	background-color: #b1ccf5;
@@ -155,16 +155,16 @@ section h2, section h3{
 
 /*Talbela de Registros */
 
-.listaRegistros{
+.listaRegistros, .listaMarcas{
 	margin-bottom: 10px;
 }
-.listaRegistros table{
+.listaRegistros table, .listaMarcas table{
 	border: 1px solid#000;
 	border-collapse: colapse;
 	margin: 0 auto;
 	min-width: 50%;
 }
-.listaRegistros table th{
+.listaRegistros table th, .listaMarcas table th{
 	text-align: center;
 	font-size: 18px;
 	font-weight: bold;
@@ -172,17 +172,17 @@ section h2, section h3{
 	padding: 0 5px;
 	border: transparent;
 }
-.listaRegistros tr, .listaRegistros td, .listaRegistros th{
+.listaRegistros tr, .listaRegistros td, .listaRegistros th, .listaMarcas tr, .listaMarcas td, .listaMarcas th{
 	border: 1px solid #B0C4DE;
 	padding: 0px 5px
 }
-.listaRegistros tr, .listaRegistros td{
+.listaRegistros tr, .listaRegistros td, .listaRegistros th, .listaMarcas tr, .listaMarcas td, .listaMarcas th{
 	font-size: 16px;
 }
-.listaRegistros tr:nth-child(even){
+.listaRegistros tr:nth-child(even), .listaRegistros th:nth-child(even){
 	background-color: #b1ccf5;
 }
-.listaRegistros tr:nth-child(odd){
+.listaRegistros tr:nth-child(odd), .listaRegistros th:nth-child(odd){
 	background-color: #83afd3;
 }
 .listaRegistros .acoes{
