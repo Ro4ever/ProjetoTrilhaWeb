@@ -1,0 +1,201 @@
+package br.com.coldigogeladeiras.rest;
+
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+
+import br.com.coldigogeladeiras.bd.Conexao;
+import br.com.coldigogeladeiras.jdbc.JDBCMarcaDAO;
+import br.com.coldigogeladeiras.modelo.Marca;
+
+//JSON é como se fosse uma tabela temporária, que armazena os dados e faz a comunicação e a tranferência dados entre servidor e cliente
+
+//Define a classe que responderá a requisições HTTP para URLs que começam com "/ProjetoTrilhaWeb/rest/marca".
+@Path("marca")
+public class MarcaRest extends UtilRest {
+
+ // Método para buscar todas as marcas disponíveis no banco de dados e retorná-las como JSON.
+ @GET
+ @Path("/buscar") // É a URL que entra no método
+ @Produces(MediaType.APPLICATION_JSON) // Tipagem de dados que vai usar, ex: JSON
+ public Response buscar() {
+     try {
+         List<Marca> listaMarcas = new ArrayList<Marca>();
+         
+         // Estabelece conexão com o banco de dados.
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         
+         // Cria um DAO para operações de marca no banco.
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         listaMarcas = jdbcMarca.buscar();  // Busca marcas.
+         
+         conec.fecharConexao();  // Fecha a conexão com o banco.
+         return this.buildResponse(listaMarcas);  // Converte a lista de marcas para JSON e retorna.
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());  // Retorna erro em formato JSON.
+     }
+ }
+
+ // Método para inserir uma nova marca no banco de dados.
+ @POST
+ @Path("/inserir") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ public Response inserir(String marcaParam) {
+     try {
+         // Converte o parâmetro JSON recebido em um objeto Marca.
+         Marca marca = new Gson().fromJson(marcaParam, Marca.class);
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         
+         // Verifica se a marca já está cadastrada.
+         boolean verificaMarca = jdbcMarca.verificaMarcaCadastrada(marca.getNome());
+         if(verificaMarca) {
+             return this.buildErrorResponse("Marca já existente!");
+         } else {
+             // Insere a marca no banco e verifica se foi bem-sucedido.
+             boolean retorno = jdbcMarca.inserir(marca);
+             if(retorno) {
+                 return this.buildResponse("Marca cadastrada com sucesso!");
+             } else {
+                 return this.buildErrorResponse("Erro ao cadastrar marca");
+             }
+         }
+     } catch(Exception e){
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+
+ // Método para buscar marcas por nome usando um parâmetro de consulta.
+ @GET
+ @Path("/buscarNome") // É a URL que entra no método
+ @Produces(MediaType.APPLICATION_JSON) // Tipagem de dados que vai usar, ex: JSON
+ public Response buscarPorNome(@QueryParam("valorBusca") String nome) {
+     try {
+         List<JsonObject> listaMarcas = new ArrayList<JsonObject>();
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         listaMarcas = jdbcMarca.buscarPorNome(nome);
+         
+         conec.fecharConexao();
+         String json = new Gson().toJson(listaMarcas);
+         return this.buildResponse(json);
+     } catch(Exception e){
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+
+ // Método para excluir uma marca pelo ID.
+ @DELETE
+ @Path("/excluir/{id}") // É a URL que entra no método
+ public Response excluir(@PathParam("id") int id) {
+     try {
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         
+         boolean verificacao = jdbcMarca.verificaProduto(id);
+         if(verificacao) {
+             boolean retorno = jdbcMarca.deletar(id);
+             if(retorno) {
+                 return this.buildResponse("Marca excluída com sucesso!");
+             } else {
+                 return this.buildErrorResponse("Erro ao excluir marca.");
+             }
+         } else {
+             return this.buildErrorResponse("A marca não pode ser excluída pois existe um produto registrado com essa marca.");
+         }
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+
+ // Método para buscar uma marca pelo ID.
+ @GET
+ @Path("/buscarPorId") // É a URL que entra no método
+ @Produces(MediaType.APPLICATION_JSON) // Tipagem de dados que vai usar, ex: JSON
+ public Response buscarPorId(@QueryParam("id") int id) {
+     try {
+         Marca marca = new Marca();
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         marca = jdbcMarca.buscarPorId(id);
+         
+         conec.fecharConexao();
+         return this.buildResponse(marca);
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+
+ // Método para alterar uma marca existente.
+ @PUT
+ @Path("/alterar") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ public Response alterar(String marcaParam) {
+     try {
+         Marca marca = new Gson().fromJson(marcaParam, Marca.class);
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         
+         boolean retorno = jdbcMarca.alterar(marca);
+         if(retorno) {
+             return this.buildResponse("Marca alterada com sucesso!");
+         } else {
+             return this.buildErrorResponse("Erro ao alterar marca.");
+         }
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+
+ // Método para alterar o status de uma marca pelo ID.
+ @PUT
+ @Path("/alterarStatus/{id}") // É a URL que entra no método
+ public Response alterarStatus(@PathParam("id") int id) {
+     try {
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         JDBCMarcaDAO jdbcMarca = new JDBCMarcaDAO(conexao);
+         
+         int retorno = jdbcMarca.alterarStatus(id);
+         if(retorno == 1) {
+             return this.buildResponse("A marca está ativa!");
+         } else if(retorno == 0) {
+             return this.buildResponse("A marca está inativa!");
+         } else {
+             return this.buildErrorResponse("Erro ao alterar status da marca!");
+         }
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+
+}

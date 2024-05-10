@@ -4,6 +4,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import com.google.gson.Gson;
 
+//GSON é uma biblioteca utilizada para converter objetos Java em JSON
 
 /* Abaixo  o método responsável por enviar a resposta ao cliente sobre
  * a transação realizada (ilclusão, consulta, edição ou exclusão) caso

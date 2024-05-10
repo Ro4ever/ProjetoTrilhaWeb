@@ -22,140 +22,168 @@ import br.com.coldigogeladeiras.bd.Conexao;
 import br.com.coldigogeladeiras.jdbc.JDBCProdutoDAO;
 import br.com.coldigogeladeiras.modelo.Produto;
 
+// JSON é como se fosse uma tabela temporária, que armazena os dados e faz a comunicação e a tranferência dados entre servidor e cliente
+// GSON é uma biblioteca utilizada para converter objetos Java em JSON
+
+//Classe responsável por responder às requisições HTTP relacionadas a produtos.
 @Path("produto")
 public class ProdutoRest extends UtilRest{
-	
-	@POST
-	@Path("/inserir")
-	@Consumes("application/*")
-	public Response inserir(String produtoParam) {
-		
-		try {
-			
-			Produto produto = new Gson().fromJson(produtoParam, Produto.class);
-			Conexao conec = new Conexao();
-			Connection conexao = conec.abrirConexao();
-			
-			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
-			boolean retorno = jdbcProduto.inserir(produto);
-			
-			String msg = "";
-			
-			if(retorno) {
-				msg = "Produto cadastrado com sucesso!";
-			}else {
-				msg = "Erro ao cadastrar produto";
-			}
-			
-			conec.fecharConexao();
-			
-			return this.buildResponse(msg);
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			return this.buildErrorResponse(e.getMessage());
-		}
-	}
-	
-	@GET
-	@Path("/buscar")
-	@Consumes("application/*")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response buscarPorNome(@QueryParam("valorBusca") String nome) {
-		
-		try {
-			
-			List<JsonObject> listaProdutos = new ArrayList<JsonObject>();
-			
-			Conexao conec = new Conexao();
-			Connection conexao = conec.abrirConexao();
-			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
-			listaProdutos = jdbcProduto.buscarPorNome(nome);
-			conec.fecharConexao();
-			
-			String json = new Gson().toJson(listaProdutos);
-			return this.buildResponse(json);
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			return this.buildErrorResponse(e.getMessage());
-		}
-		
-	}
-	@DELETE
-	@Path("/excluir/{id}")
-	@Consumes("application/*")
-	public Response excluir(@PathParam("id") int id) {
-		
-		try {
-			Conexao conec = new Conexao();
-			Connection conexao = conec.abrirConexao();
-			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
-			
-			boolean retorno = jdbcProduto.deletar(id);
-			
-			String msg = "";
-			if(retorno) {
-				msg = "Produto excluído com sucesso!";
-			}else {
-				msg = "Erro ao excluir produto.";
-			}
-			
-			return this.buildResponse(msg);
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			return this.buildErrorResponse(e.getMessage());
-		}
-		
-	}
-	@GET
-	@Path("/buscarPorId")
-	@Consumes("application/*")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response buscarPorId(@QueryParam("id") int id) {
-		try {
-			Produto produto = new Produto();
-			Conexao conec = new Conexao();
-			Connection conexao = conec.abrirConexao();
-			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
-			
-			produto = jdbcProduto.buscarPorId(id);
-			
-			conec.fecharConexao();
-			
-			return this.buildResponse(produto);
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			return this.buildErrorResponse(e.getMessage());
-		}
-	}
-	@PUT
-	@Path("/alterar")
-	@Consumes("application/*")
-	public Response alterar(String produtoParam) {
-		try {
-			Produto produto = new Gson().fromJson(produtoParam, Produto.class);
-			Conexao conec = new Conexao();
-			Connection conexao = conec.abrirConexao();
-			JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
-			
-			boolean retorno = jdbcProduto.alterar(produto);
-			
-			String msg = "";
-			if(retorno) {
-				msg = "Produto alterado com sucesso!";
-			}else {
-				msg = "Erro ao alterar produto.";
-			}
-			
-			conec.fecharConexao();
-			return this.buildResponse(msg);
-			
-		}catch(Exception e) {
-			e.printStackTrace();
-			return this.buildErrorResponse(e.getMessage());
-		}
-	}
+
+ // Método para inserir um novo produto no banco de dados.
+ @POST
+ @Path("/inserir") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ public Response inserir(String produtoParam) {
+     try {
+         // Converte o parâmetro JSON recebido em um objeto Produto.
+         Produto produto = new Gson().fromJson(produtoParam, Produto.class);
+         
+         // Estabelece conexão com o banco de dados.
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         
+         // Cria um DAO para operações de produto no banco.
+         JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+         boolean retorno = jdbcProduto.inserir(produto);
+         
+         // Prepara a mensagem de resposta com base no sucesso da operação.
+         String msg = "";
+         if(retorno) {
+             msg = "Produto cadastrado com sucesso!";
+         } else {
+             msg = "Erro ao cadastrar produto";
+         }
+         
+         // Fecha a conexão com o banco.
+         conec.fecharConexao();
+         
+         // Retorna a resposta.
+         return this.buildResponse(msg);
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+ 
+ // Método para buscar produtos pelo nome.
+ @GET
+ @Path("/buscar") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ @Produces(MediaType.APPLICATION_JSON) // Tipagem de dados que vai usar, ex: JSON
+ public Response buscarPorNome(@QueryParam("valorBusca") String nome) {
+     try {
+         List<JsonObject> listaProdutos = new ArrayList<JsonObject>();
+         
+         // Estabelece conexão com o banco de dados.
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         
+         // Cria um DAO para operações de produto no banco e realiza a busca por nome.
+         JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+         listaProdutos = jdbcProduto.buscarPorNome(nome);
+         
+         // Fecha a conexão com o banco.
+         conec.fecharConexao();
+         
+         // Converte a lista de produtos para JSON e retorna.
+         String json = new Gson().toJson(listaProdutos);
+         return this.buildResponse(json);
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+ 
+ // Método para excluir um produto pelo ID.
+ @DELETE
+ @Path("/excluir/{id}") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ public Response excluir(@PathParam("id") int id) {
+     try {
+         // Estabelece conexão com o banco de dados.
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         
+         // Cria um DAO para operações de produto no banco e tenta deletar o produto especificado.
+         JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+         boolean retorno = jdbcProduto.deletar(id);
+         
+         // Prepara a mensagem de resposta com base no sucesso da operação.
+         String msg = "";
+         if(retorno) {
+             msg = "Produto excluído com sucesso!";
+         } else {
+             msg = "Erro ao excluir produto.";
+         }
+         
+         // Retorna a resposta.
+         return this.buildResponse(msg);
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+ 
+ // Método para buscar um produto pelo ID.
+ @GET
+ @Path("/buscarPorId") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ @Produces(MediaType.APPLICATION_JSON) // Tipagem de dados que vai usar, ex: JSON
+ public Response buscarPorId(@QueryParam("id") int id) {
+     try {
+         // Cria um objeto Produto para receber os dados.
+         Produto produto = new Produto();
+         
+         // Estabelece conexão com o banco de dados.
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         
+         // Cria um DAO para operações de produto no banco e busca o produto pelo ID.
+         JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+         produto = jdbcProduto.buscarPorId(id);
+         
+         // Fecha a conexão com o banco.
+         conec.fecharConexao();
+         
+         // Retorna o produto encontrado em formato JSON.
+         return this.buildResponse(produto);
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
+ 
+ // Método para alterar as informações de um produto existente.
+ @PUT
+ @Path("/alterar") // É a URL que entra no método
+ @Consumes("application/*") // Vai retornar a MediaType do HTML
+ public Response alterar(String produtoParam) {
+     try {
+         // Converte o parâmetro JSON recebido em um objeto Produto.
+         Produto produto = new Gson().fromJson(produtoParam, Produto.class);
+         
+         // Estabelece conexão com o banco de dados.
+         Conexao conec = new Conexao();
+         Connection conexao = conec.abrirConexao();
+         
+         // Cria um DAO para operações de produto no banco e tenta alterar o produto especificado.
+         JDBCProdutoDAO jdbcProduto = new JDBCProdutoDAO(conexao);
+         boolean retorno = jdbcProduto.alterar(produto);
+         
+         // Prepara a mensagem de resposta com base no sucesso da operação.
+         String msg = "";
+         if(retorno) {
+             msg = "Produto alterado com sucesso!";
+         } else {
+             msg = "Erro ao alterar produto.";
+         }
+         
+         // Fecha a conexão com o banco.
+         conec.fecharConexao();
+         return this.buildResponse(msg);
+     } catch(Exception e) {
+         e.printStackTrace();
+         return this.buildErrorResponse(e.getMessage());
+     }
+ }
 }
